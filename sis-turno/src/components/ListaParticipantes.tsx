@@ -26,7 +26,7 @@ export function ListaParticipantes({ participantes, onEliminar }: Props) {
             <tr>
               <th>Nombre</th>
               <th>PR</th>
-              <th>Tipo</th>
+              <th>Jugadas</th>
               <th></th>
             </tr>
           </thead>
@@ -44,9 +44,9 @@ export function ListaParticipantes({ participantes, onEliminar }: Props) {
                 <td className="celda-pr">
                   <span className={`badge-pr ${p.pr > 0 ? "pr-activo" : "pr-cero"}`}>{p.pr}</span>
                 </td>
-                <td className="celda-tipo">
-                  <span className={`badge-tipo ${p.esJugador ? "jugador" : "enemigo"}`}>
-                    {p.esJugador ? "Jugador" : "Enemigo"}
+                <td className="celda-jugadas">
+                  <span className={`badge-jugadas ${(p.vecesJugadas ?? 0) === 0 ? "jugadas-cero" : "jugadas-ok"}`}>
+                    {p.vecesJugadas ?? 0}
                   </span>
                 </td>
                 <td>

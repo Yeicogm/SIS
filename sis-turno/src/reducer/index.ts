@@ -14,6 +14,7 @@ export const estadoInicial: EstadoApp = {
   turnoActual: 1,
   nombreAnunciado: null,
   esJugadorAnunciado: null,
+  esperandoNuevoRound: false,
 };
 
 export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
@@ -41,28 +42,38 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
       };
 
     case "SIGUIENTE_TURNO": {
-      const resultado = seleccionarSiguiente(estado.participantes);
-
-      if (resultado.nuevoRound) {
-        // Ejecutar selección con los PR restaurados
-        const resultadoPostReinicio = seleccionarSiguiente(resultado.actualizados);
-        if (resultadoPostReinicio.seleccionado === null) {
-          return estado; // sin participantes
-        }
-        const nuevoTurnoJugado = {
+      // Si estamos esperando para arrancar el nuevo round, ahora sí seleccionamos
+      if (estado.esperandoNuevoRound) {
+        const resultado = seleccionarSiguiente(estado.participantes);
+        if (resultado.seleccionado === null) return estado;
+        const nuevoTurno = {
           turnoNumero: estado.turnoActual,
-          nombre: resultadoPostReinicio.seleccionado.nombre,
-          esJugador: resultadoPostReinicio.seleccionado.esJugador,
+          nombre: resultado.seleccionado.nombre,
+          esJugador: resultado.seleccionado.esJugador,
           timestamp: new Date(),
         };
         return {
           ...estado,
-          participantes: resultadoPostReinicio.actualizados,
-          historial: [nuevoTurnoJugado, ...estado.historial].slice(0, 50),
-          round: estado.round + 1,
+          participantes: resultado.actualizados,
+          historial: [nuevoTurno, ...estado.historial].slice(0, 50),
           turnoActual: estado.turnoActual + 1,
-          nombreAnunciado: resultadoPostReinicio.seleccionado.nombre,
-          esJugadorAnunciado: resultadoPostReinicio.seleccionado.esJugador,
+          nombreAnunciado: resultado.seleccionado.nombre,
+          esJugadorAnunciado: resultado.seleccionado.esJugador,
+          esperandoNuevoRound: false,
+        };
+      }
+
+      const resultado = seleccionarSiguiente(estado.participantes);
+
+      // Todos los PR llegaron a 0: resetear y pausar antes de empezar el nuevo round
+      if (resultado.nuevoRound) {
+        return {
+          ...estado,
+          participantes: resultado.actualizados,
+          round: estado.round + 1,
+          nombreAnunciado: null,
+          esJugadorAnunciado: null,
+          esperandoNuevoRound: true,
         };
       }
 
@@ -82,6 +93,7 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
         turnoActual: estado.turnoActual + 1,
         nombreAnunciado: resultado.seleccionado.nombre,
         esJugadorAnunciado: resultado.seleccionado.esJugador,
+        esperandoNuevoRound: false,
       };
     }
 

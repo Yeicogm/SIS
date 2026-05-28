@@ -64,7 +64,7 @@ body {
 
 .layout {
   display: grid;
-  grid-template-columns: 280px 1fr 240px;
+  grid-template-columns: 340px 1fr 240px;
   gap: 16px;
   padding: 16px;
   flex: 1;
@@ -290,7 +290,7 @@ body {
   align-items: center;
   gap: 6px;
   font-weight: 600;
-  max-width: 120px;
+  max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -327,6 +327,30 @@ body {
   background: rgba(255, 200, 0, 0.1);
   color: var(--color-amarillo);
   border: 1px solid rgba(243, 156, 18, 0.4);
+}
+
+.celda-jugadas {
+  text-align: center;
+}
+
+.badge-jugadas {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.jugadas-cero {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.35);
+}
+
+.jugadas-ok {
+  background: rgba(39, 174, 96, 0.15);
+  color: #2ecc71;
+  border: 1px solid rgba(39, 174, 96, 0.35);
 }
 
 .badge-tipo {
@@ -388,6 +412,23 @@ body {
 .anuncio-enemigo {
   background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(231, 76, 60, 0.05));
   border-color: var(--color-enemigo);
+}
+
+.anuncio-nuevo-round {
+  background: linear-gradient(135deg, rgba(243, 156, 18, 0.15), rgba(243, 156, 18, 0.05));
+  border-color: var(--color-amarillo);
+}
+
+.anuncio-nuevo-round .anuncio-icono {
+  color: var(--color-amarillo);
+}
+
+.anuncio-nuevo-round .anuncio-nombre {
+  color: var(--color-amarillo);
+}
+
+.anuncio-nuevo-round .anuncio-subtitulo {
+  font-size: 0.85rem;
 }
 
 .anuncio-vacio {
@@ -706,7 +747,7 @@ body {
    ============================================= */
 @media (max-width: 1024px) {
   .layout {
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 300px 1fr;
     grid-template-rows: auto auto;
   }
   .columna-derecha {

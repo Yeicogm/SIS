@@ -4,6 +4,7 @@ export interface Participante {
   pr: number;
   prOriginal: number;
   esJugador: boolean;
+  vecesJugadas: number;
 }
 
 export interface TurnoJugado {
@@ -20,4 +21,5 @@ export interface EstadoApp {
   turnoActual: number;
   nombreAnunciado: string | null;
   esJugadorAnunciado: boolean | null;
+  esperandoNuevoRound: boolean;
 }

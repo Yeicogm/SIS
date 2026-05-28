@@ -30,24 +30,22 @@ function App() {
     ...estadoInicial,
     participantes: cargarParticipantes(),
   });
-  const prevRound = useRef(estado.round);
-
   useEffect(() => {
     hablar("S.I.S. Sistema de Iniciativa");
   }, []);
 
-  // TTS reactivo: se dispara cuando cambia el turno real del estado
-  // Así el nombre anunciado siempre coincide con lo que muestra la UI
+  // TTS: anuncia nuevo round cuando todos los PR llegan a 0
+  useEffect(() => {
+    if (estado.esperandoNuevoRound) {
+      hablar(`Round ${estado.round}. Ajusta participantes cuando estés listo.`);
+    }
+  }, [estado.esperandoNuevoRound, estado.round]);
+
+  // TTS: anuncia al participante seleccionado
   useEffect(() => {
     if (estado.nombreAnunciado === null) return;
-    const esNuevoRound = estado.round > prevRound.current;
-    prevRound.current = estado.round;
-    if (esNuevoRound) {
-      hablar(`Nuevo round. ${estado.nombreAnunciado}, te toca`);
-    } else {
-      hablar(`${estado.nombreAnunciado}, te toca`);
-    }
-  }, [estado.turnoActual]); // turnoActual incrementa exactamente una vez por turno
+    hablar(`${estado.nombreAnunciado}, te toca`);
+  }, [estado.turnoActual]);
 
   // Persiste participantes en localStorage cada vez que cambian
   useEffect(() => {
@@ -91,7 +89,12 @@ function App() {
 
         {/* Columna central */}
         <section className="columna-central">
-          <AnuncioActual nombre={estado.nombreAnunciado} esJugador={estado.esJugadorAnunciado} />
+          <AnuncioActual
+            nombre={estado.nombreAnunciado}
+            esJugador={estado.esJugadorAnunciado}
+            esperandoNuevoRound={estado.esperandoNuevoRound}
+            round={estado.round}
+          />
           <PanelTurno
             participantes={estado.participantes}
             round={estado.round}

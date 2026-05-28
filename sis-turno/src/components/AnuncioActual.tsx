@@ -1,21 +1,33 @@
 import { useEffect, useState } from "react";
-import { User, Skull } from "lucide-react";
+import { User, Skull, Swords } from "lucide-react";
 
 interface Props {
   nombre: string | null;
   esJugador: boolean | null;
+  esperandoNuevoRound: boolean;
+  round: number;
 }
 
-export function AnuncioActual({ nombre, esJugador }: Props) {
+export function AnuncioActual({ nombre, esJugador, esperandoNuevoRound, round }: Props) {
   const [animado, setAnimado] = useState(false);
 
   useEffect(() => {
-    if (nombre) {
-      setAnimado(false);
-      const t = setTimeout(() => setAnimado(true), 20);
-      return () => clearTimeout(t);
-    }
-  }, [nombre]);
+    setAnimado(false);
+    const t = setTimeout(() => setAnimado(true), 20);
+    return () => clearTimeout(t);
+  }, [nombre, esperandoNuevoRound]);
+
+  if (esperandoNuevoRound) {
+    return (
+      <div className="anuncio-actual anuncio-nuevo-round">
+        <div className={`anuncio-contenido ${animado ? "anuncio-fade-in" : ""}`}>
+          <Swords size={40} className="anuncio-icono" />
+          <p className="anuncio-nombre">ROUND {round}</p>
+          <p className="anuncio-subtitulo">Ajusta participantes y pulsa siguiente</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

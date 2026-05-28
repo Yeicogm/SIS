@@ -28,6 +28,7 @@ export function FormularioAgregar({ onAgregar }: Props) {
       pr: prFinal,
       prOriginal: prFinal,
       esJugador,
+      vecesJugadas: 0,
     };
     onAgregar(nuevo);
     hablar(`Agregado: ${nuevo.nombre}`);
