@@ -590,6 +590,95 @@ body {
 }
 
 /* =============================================
+   PROBABILIDAD PRÓXIMO TURNO
+   ============================================= */
+.probabilidad-panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-panel-borde);
+  border-radius: var(--radio-lg);
+  padding: 16px;
+}
+
+.probabilidad-titulo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-borde);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.prob-lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.prob-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.prob-nombre {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prob-rojo .prob-nombre {
+  color: #e74c3c;
+}
+.prob-rojo .prob-porcentaje {
+  color: #e74c3c;
+}
+
+.prob-naranja .prob-nombre {
+  color: #e67e22;
+}
+.prob-naranja .prob-porcentaje {
+  color: #e67e22;
+}
+
+.prob-verde .prob-nombre {
+  color: #27ae60;
+}
+.prob-verde .prob-porcentaje {
+  color: #27ae60;
+}
+
+.prob-porcentaje {
+  min-width: 38px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+}
+
+.prob-separador {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-texto-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 10px 0 6px;
+  border-top: 1px solid var(--color-panel-borde);
+  padding-top: 8px;
+}
+
+.prob-lista-jugados .prob-item.prob-jugado {
+  color: #4a6fa5;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.78rem;
+  padding: 2px 0;
+}
+
+/* =============================================
    RESPONSIVIDAD
    ============================================= */
 @media (max-width: 1024px) {

@@ -5,6 +5,7 @@ import { ListaParticipantes } from "./components/ListaParticipantes";
 import { PanelTurno } from "./components/PanelTurno";
 import { AnuncioActual } from "./components/AnuncioActual";
 import { Historial } from "./components/Historial";
+import { ProbabilidadProximo } from "./components/ProbabilidadProximo";
 import { hablar } from "./utils/hablar";
 import { Participante } from "./types";
 import { Trash2 } from "lucide-react";
@@ -97,6 +98,7 @@ function App() {
             turnoActual={estado.turnoActual}
             onSiguienteTurno={handleSiguienteTurno}
           />
+          <ProbabilidadProximo participantes={estado.participantes} />
         </section>
 
         {/* Columna derecha */}
