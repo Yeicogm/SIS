@@ -10,18 +10,40 @@ function colorPorRango(rango: number): string {
   return "prob-verde";
 }
 
+function calcularVelocidadGrupo(participantes: Participante[]): {
+  aviso: "jugadores" | "enemigos" | null;
+} {
+  const jugadores = participantes.filter((p) => p.esJugador);
+  const enemigos = participantes.filter((p) => !p.esJugador);
+
+  if (jugadores.length < 1 || enemigos.length < 1) return { aviso: null };
+
+  const avgJugadores = jugadores.reduce((s, p) => s + p.prOriginal, 0) / jugadores.length;
+  const avgEnemigos = enemigos.reduce((s, p) => s + p.prOriginal, 0) / enemigos.length;
+  const diferencial = Math.abs(avgEnemigos - avgJugadores) / 5;
+
+  if (diferencial <= 1) return { aviso: null };
+  return { aviso: avgEnemigos > avgJugadores ? "enemigos" : "jugadores" };
+}
+
 export function ProbabilidadProximo({ participantes }: Props) {
   if (participantes.length === 0) return null;
 
   const activos = [...participantes].filter((p) => p.pr > 0).sort((a, b) => b.pr - a.pr);
-
   const yaJugaron = participantes.filter((p) => p.pr === 0);
-
   const totalPR = activos.reduce((sum, p) => sum + p.pr, 0);
+  const { aviso } = calcularVelocidadGrupo(participantes);
 
   return (
     <div className="probabilidad-panel">
       <h2 className="probabilidad-titulo">PROBABILIDAD PRÓXIMO TURNO</h2>
+
+      {aviso === "enemigos" && (
+        <div className="prob-aviso prob-aviso-enemigos">⚠ ¡LOS ENEMIGOS SON MÁS RÁPIDOS!</div>
+      )}
+      {aviso === "jugadores" && (
+        <div className="prob-aviso prob-aviso-jugadores">⚡ ¡LOS JUGADORES SON MÁS RÁPIDOS!</div>
+      )}
 
       {activos.length === 0 ? (
         <p className="sin-datos">Todos han jugado este round</p>
