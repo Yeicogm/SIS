@@ -105,6 +105,7 @@ function App() {
             participantes={estado.participantes}
             round={estado.round}
             turnoActual={estado.turnoActual}
+            prxTurno={estado.prxTurno}
             onSiguienteTurno={handleSiguienteTurno}
           />
           <ProbabilidadProximo participantes={estado.participantes} />

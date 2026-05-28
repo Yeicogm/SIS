@@ -8,7 +8,10 @@ interface ResultadoSeleccion {
   nuevoRound: boolean;
 }
 
-export function seleccionarSiguiente(participantes: Participante[]): ResultadoSeleccion {
+export function seleccionarSiguiente(
+  participantes: Participante[],
+  prxTurno: number = PR_X_TURNO,
+): ResultadoSeleccion {
   const activos = participantes.filter((p) => p.pr > 0);
 
   if (activos.length === 0) {
@@ -36,8 +39,8 @@ export function seleccionarSiguiente(participantes: Participante[]): ResultadoSe
     const veces = p.vecesJugadas ?? 0;
 
     if (p.id === seleccionado.id) {
-      // Seleccionado: PR baja por PRxTurno + (acciones previas * 2), nunca menos de 0
-      const nuevoPR = Math.max(0, p.pr - PR_X_TURNO - veces * 2);
+      // Seleccionado: PR baja por prxTurno + (acciones previas * 2), nunca menos de 0
+      const nuevoPR = Math.max(0, p.pr - prxTurno - veces * 2);
       return { ...p, pr: nuevoPR, vecesJugadas: veces + 1 };
     } else if (p.pr > 0) {
       if (veces === 0) {

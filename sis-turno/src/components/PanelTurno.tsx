@@ -7,10 +7,11 @@ interface Props {
   participantes: Participante[];
   round: number;
   turnoActual: number;
+  prxTurno: number;
   onSiguienteTurno: () => void;
 }
 
-export function PanelTurno({ participantes, round, turnoActual, onSiguienteTurno }: Props) {
+export function PanelTurno({ participantes, round, turnoActual, prxTurno, onSiguienteTurno }: Props) {
   const hayParticipantes = participantes.length > 0;
   const habilitado = hayParticipantes;
   const [mostrarInfo, setMostrarInfo] = useState(false);
@@ -25,7 +26,12 @@ export function PanelTurno({ participantes, round, turnoActual, onSiguienteTurno
           Turno: <strong>{turnoActual}</strong>
         </span>
         <span className="contador contador-prt">
-          PRxT: <strong>{PR_X_TURNO}</strong>
+          PRxT: <strong>{prxTurno}</strong>
+          {prxTurno !== PR_X_TURNO && (
+            <span className="prt-ajustado" title="Ajustado por diferencia de velocidad entre grupos">
+              ↓
+            </span>
+          )}
           <button
             className="prt-hint"
             onClick={() => setMostrarInfo((v) => !v)}
@@ -49,10 +55,13 @@ export function PanelTurno({ participantes, round, turnoActual, onSiguienteTurno
           <button className="prt-popover-cerrar" onClick={() => setMostrarInfo(false)}>
             ✕
           </button>
-          <p className="prt-popover-titulo">Cálculo PRxT = {PR_X_TURNO}</p>
+          <p className="prt-popover-titulo">
+            Cálculo PRxT = {prxTurno}
+            {prxTurno !== PR_X_TURNO && ` (base ${PR_X_TURNO}, ajustado por diferencia de grupos)`}
+          </p>
           <ul className="prt-popover-lista">
             <li>
-              <strong>Seleccionado:</strong> PR − {PR_X_TURNO} − (jugadas × 2)
+              <strong>Seleccionado:</strong> PR − {prxTurno} − (jugadas × 2)
             </li>
             <li>
               <strong>Sin jugar aún:</strong> max(1, PR − 1) <span className="prt-nota">no baja de 1</span>

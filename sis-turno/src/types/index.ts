@@ -21,6 +21,7 @@ export interface EstadoApp {
   historial: TurnoJugado[];
   round: number;
   turnoActual: number;
+  prxTurno: number;
   nombreAnunciado: string | null;
   esJugadorAnunciado: boolean | null;
   esperandoNuevoRound: boolean;

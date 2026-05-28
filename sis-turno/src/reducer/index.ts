@@ -1,5 +1,16 @@
 import { EstadoApp, Participante } from "../types";
-import { seleccionarSiguiente } from "../utils/seleccionarSiguiente";
+import { seleccionarSiguiente, PR_X_TURNO } from "../utils/seleccionarSiguiente";
+
+function calcularPRxTurno(participantes: Participante[]): number {
+  const jugadores = participantes.filter((p) => p.esJugador);
+  const enemigos = participantes.filter((p) => !p.esJugador);
+  if (jugadores.length < 2 || enemigos.length < 2) return PR_X_TURNO;
+  const avgJugadores = jugadores.reduce((s, p) => s + p.prOriginal, 0) / jugadores.length;
+  const avgEnemigos = enemigos.reduce((s, p) => s + p.prOriginal, 0) / enemigos.length;
+  const diferencial = Math.abs(avgEnemigos - avgJugadores) / 5;
+  if (diferencial <= 1) return PR_X_TURNO;
+  return Math.max(6, PR_X_TURNO - Math.floor(diferencial * 2));
+}
 
 export type Accion =
   | { type: "AGREGAR_PARTICIPANTE"; payload: Participante }
@@ -12,6 +23,7 @@ export const estadoInicial: EstadoApp = {
   historial: [],
   round: 1,
   turnoActual: 1,
+  prxTurno: PR_X_TURNO,
   nombreAnunciado: null,
   esJugadorAnunciado: null,
   esperandoNuevoRound: false,
@@ -44,7 +56,8 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
     case "SIGUIENTE_TURNO": {
       // Si estamos esperando para arrancar el nuevo round, ahora sí seleccionamos
       if (estado.esperandoNuevoRound) {
-        const resultado = seleccionarSiguiente(estado.participantes);
+        const prxTurnoEfectivo = calcularPRxTurno(estado.participantes);
+        const resultado = seleccionarSiguiente(estado.participantes, prxTurnoEfectivo);
         if (resultado.seleccionado === null) return estado;
         const vecesNuevas =
           resultado.actualizados.find((p) => p.id === resultado.seleccionado!.id)?.vecesJugadas ?? 1;
@@ -61,13 +74,16 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
           participantes: resultado.actualizados,
           historial: [nuevoTurno, ...estado.historial].slice(0, 50),
           turnoActual: estado.turnoActual + 1,
+          prxTurno: prxTurnoEfectivo,
           nombreAnunciado: resultado.seleccionado.nombre,
           esJugadorAnunciado: resultado.seleccionado.esJugador,
           esperandoNuevoRound: false,
         };
       }
 
-      const resultado = seleccionarSiguiente(estado.participantes);
+      const prxTurnoEfectivo2 =
+        estado.historial.length === 0 ? calcularPRxTurno(estado.participantes) : estado.prxTurno;
+      const resultado = seleccionarSiguiente(estado.participantes, prxTurnoEfectivo2);
 
       // Todos los PR llegaron a 0: resetear y pausar antes de empezar el nuevo round
       if (resultado.nuevoRound) {
@@ -75,6 +91,7 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
           ...estado,
           participantes: resultado.actualizados,
           round: estado.round + 1,
+          prxTurno: PR_X_TURNO,
           nombreAnunciado: null,
           esJugadorAnunciado: null,
           esperandoNuevoRound: true,
@@ -99,6 +116,7 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
         participantes: resultado.actualizados,
         historial: [nuevoTurnoJugado, ...estado.historial].slice(0, 50),
         turnoActual: estado.turnoActual + 1,
+        prxTurno: prxTurnoEfectivo2,
         nombreAnunciado: resultado.seleccionado.nombre,
         esJugadorAnunciado: resultado.seleccionado.esJugador,
         esperandoNuevoRound: false,
