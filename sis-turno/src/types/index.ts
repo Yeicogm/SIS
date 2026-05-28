@@ -5,6 +5,7 @@ export interface Participante {
   prOriginal: number;
   esJugador: boolean;
   vecesJugadas: number;
+  herido?: boolean;
 }
 
 export interface TurnoJugado {

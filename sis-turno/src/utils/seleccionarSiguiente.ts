@@ -15,10 +15,10 @@ export function seleccionarSiguiente(
   const activos = participantes.filter((p) => p.pr > 0);
 
   if (activos.length === 0) {
-    // Reiniciar todos los PR al valor original y resetear vecesJugadas
+    // Reiniciar PR al valor original (o la mitad si está herido) y resetear vecesJugadas
     const reiniciados = participantes.map((p) => ({
       ...p,
-      pr: p.prOriginal,
+      pr: p.herido ? Math.max(1, Math.floor(p.prOriginal / 2)) : p.prOriginal,
       vecesJugadas: 0,
     }));
     return { seleccionado: null, actualizados: reiniciados, nuevoRound: true };

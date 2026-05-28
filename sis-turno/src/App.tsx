@@ -64,6 +64,10 @@ function App() {
     dispatch({ type: "ELIMINAR_PARTICIPANTE", payload: id });
   }
 
+  function handleToggleHerido(id: string) {
+    dispatch({ type: "TOGGLE_HERIDO", payload: id });
+  }
+
   function handleSiguienteTurno() {
     dispatch({ type: "SIGUIENTE_TURNO" });
   }
@@ -87,7 +91,11 @@ function App() {
         {/* Columna izquierda */}
         <aside className="columna-izquierda">
           <FormularioAgregar onAgregar={handleAgregarParticipante} />
-          <ListaParticipantes participantes={estado.participantes} onEliminar={handleEliminarParticipante} />
+          <ListaParticipantes
+            participantes={estado.participantes}
+            onEliminar={handleEliminarParticipante}
+            onToggleHerido={handleToggleHerido}
+          />
         </aside>
 
         {/* Columna central */}

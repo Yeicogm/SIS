@@ -16,7 +16,8 @@ export type Accion =
   | { type: "AGREGAR_PARTICIPANTE"; payload: Participante }
   | { type: "ELIMINAR_PARTICIPANTE"; payload: string }
   | { type: "SIGUIENTE_TURNO" }
-  | { type: "LIMPIAR_TODO" };
+  | { type: "LIMPIAR_TODO" }
+  | { type: "TOGGLE_HERIDO"; payload: string };
 
 export const estadoInicial: EstadoApp = {
   participantes: [],
@@ -120,6 +121,22 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
         nombreAnunciado: resultado.seleccionado.nombre,
         esJugadorAnunciado: resultado.seleccionado.esJugador,
         esperandoNuevoRound: false,
+      };
+    }
+
+    case "TOGGLE_HERIDO": {
+      return {
+        ...estado,
+        participantes: estado.participantes.map((p) => {
+          if (p.id !== accion.payload) return p;
+          if (p.herido) {
+            // Quitar herido: restaurar PR original
+            return { ...p, herido: false, pr: p.prOriginal };
+          } else {
+            // Marcar herido: bajar PR a la mitad (mínimo 1)
+            return { ...p, herido: true, pr: Math.max(1, Math.floor(p.prOriginal / 2)) };
+          }
+        }),
       };
     }
 

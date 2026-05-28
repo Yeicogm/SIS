@@ -391,6 +391,48 @@ body {
   background: rgba(231, 76, 60, 0.1);
 }
 
+.celda-acciones {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.btn-herido {
+  background: none;
+  border: none;
+  color: var(--color-texto-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.btn-herido:hover {
+  color: var(--color-amarillo);
+  background: rgba(243, 156, 18, 0.1);
+}
+
+.btn-herido.activo {
+  color: var(--color-amarillo);
+  background: rgba(243, 156, 18, 0.15);
+}
+
+tr.herido td {
+  background: rgba(243, 156, 18, 0.06);
+}
+
+tr.herido .celda-nombre {
+  color: var(--color-amarillo);
+  opacity: 0.9;
+}
+
+tr.herido .badge-pr {
+  border-color: rgba(243, 156, 18, 0.5) !important;
+  color: var(--color-amarillo) !important;
+}
+
 /* =============================================
    ANUNCIO ACTUAL
    ============================================= */

@@ -1,16 +1,22 @@
-import { Trash2, User, Skull } from "lucide-react";
+import { Trash2, User, Skull, HeartCrack } from "lucide-react";
 import { Participante } from "../types";
 import { hablar } from "../utils/hablar";
 
 interface Props {
   participantes: Participante[];
   onEliminar: (id: string) => void;
+  onToggleHerido: (id: string) => void;
 }
 
-export function ListaParticipantes({ participantes, onEliminar }: Props) {
+export function ListaParticipantes({ participantes, onEliminar, onToggleHerido }: Props) {
   function handleEliminar(p: Participante) {
     onEliminar(p.id);
     hablar(`${p.nombre} eliminado`);
+  }
+
+  function handleToggleHerido(p: Participante) {
+    onToggleHerido(p.id);
+    hablar(p.herido ? `${p.nombre} recuperado` : `${p.nombre} herido`);
   }
 
   const ordenados = [...participantes].sort((a, b) => b.pr - a.pr);
@@ -32,7 +38,7 @@ export function ListaParticipantes({ participantes, onEliminar }: Props) {
           </thead>
           <tbody>
             {ordenados.map((p) => (
-              <tr key={p.id} className={p.pr > 0 ? "activo" : "inactivo"}>
+              <tr key={p.id} className={`${p.pr > 0 ? "activo" : "inactivo"}${p.herido ? " herido" : ""}`}>
                 <td className="celda-nombre">
                   {p.esJugador ? (
                     <User size={14} className="icono-jugador" />
@@ -51,7 +57,14 @@ export function ListaParticipantes({ participantes, onEliminar }: Props) {
                     {p.vecesJugadas ?? 0}
                   </span>
                 </td>
-                <td>
+                <td className="celda-acciones">
+                  <button
+                    className={`btn-herido${p.herido ? " activo" : ""}`}
+                    onClick={() => handleToggleHerido(p)}
+                    title={p.herido ? `Recuperar a ${p.nombre}` : `Marcar herido a ${p.nombre}`}
+                  >
+                    <HeartCrack size={14} />
+                  </button>
                   <button
                     className="btn-eliminar"
                     onClick={() => handleEliminar(p)}
