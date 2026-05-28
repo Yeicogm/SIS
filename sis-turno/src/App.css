@@ -730,6 +730,30 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
+}
+
+.historial-ataque {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-texto-muted);
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  padding: 1px 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.historial-separador-round {
+  list-style: none;
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-borde);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 0;
+  opacity: 0.6;
 }
 
 /* =============================================

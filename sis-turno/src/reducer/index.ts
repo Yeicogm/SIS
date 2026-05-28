@@ -46,11 +46,14 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
       if (estado.esperandoNuevoRound) {
         const resultado = seleccionarSiguiente(estado.participantes);
         if (resultado.seleccionado === null) return estado;
+        const vecesNuevas = resultado.actualizados.find((p) => p.id === resultado.seleccionado!.id)?.vecesJugadas ?? 1;
         const nuevoTurno = {
           turnoNumero: estado.turnoActual,
           nombre: resultado.seleccionado.nombre,
           esJugador: resultado.seleccionado.esJugador,
           timestamp: new Date(),
+          round: estado.round,
+          vecesJugadas: vecesNuevas,
         };
         return {
           ...estado,
@@ -79,11 +82,14 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
 
       if (resultado.seleccionado === null) return estado;
 
+      const vecesNuevas2 = resultado.actualizados.find((p) => p.id === resultado.seleccionado!.id)?.vecesJugadas ?? 1;
       const nuevoTurnoJugado = {
         turnoNumero: estado.turnoActual,
         nombre: resultado.seleccionado.nombre,
         esJugador: resultado.seleccionado.esJugador,
         timestamp: new Date(),
+        round: estado.round,
+        vecesJugadas: vecesNuevas2,
       };
 
       return {
@@ -98,7 +104,14 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
     }
 
     case "LIMPIAR_TODO":
-      return { ...estadoInicial };
+      return {
+        ...estadoInicial,
+        participantes: estado.participantes.map((p) => ({
+          ...p,
+          pr: p.prOriginal,
+          vecesJugadas: 0,
+        })),
+      };
 
     default:
       return estado;

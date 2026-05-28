@@ -12,6 +12,8 @@ export interface TurnoJugado {
   nombre: string;
   esJugador: boolean;
   timestamp: Date;
+  round: number;
+  vecesJugadas: number;
 }
 
 export interface EstadoApp {

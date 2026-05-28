@@ -18,8 +18,8 @@ function cargarParticipantes(): Participante[] {
     const raw = localStorage.getItem(LS_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as Participante[];
-    // Restaurar PR al valor original al cargar (listos para nueva partida)
-    return parsed.map((p) => ({ ...p, pr: p.prOriginal }));
+    // Restaurar PR al valor original y vecesJugadas a 0 al cargar (listos para nueva partida)
+    return parsed.map((p) => ({ ...p, pr: p.prOriginal, vecesJugadas: 0 }));
   } catch {
     return [];
   }
@@ -70,7 +70,6 @@ function App() {
 
   function handleLimpiar() {
     hablar("Sesión terminada");
-    localStorage.removeItem(LS_KEY);
     dispatch({ type: "LIMPIAR_TODO" });
   }
 
