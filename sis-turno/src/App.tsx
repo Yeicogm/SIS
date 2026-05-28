@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useRef } from "react";
 import { reducer, estadoInicial } from "./reducer";
 import { FormularioAgregar } from "./components/FormularioAgregar";
 import { ListaParticipantes } from "./components/ListaParticipantes";
@@ -6,7 +6,6 @@ import { PanelTurno } from "./components/PanelTurno";
 import { AnuncioActual } from "./components/AnuncioActual";
 import { Historial } from "./components/Historial";
 import { hablar } from "./utils/hablar";
-import { seleccionarSiguiente } from "./utils/seleccionarSiguiente";
 import { Participante } from "./types";
 import { Trash2 } from "lucide-react";
 import "./App.css";
@@ -30,10 +29,24 @@ function App() {
     ...estadoInicial,
     participantes: cargarParticipantes(),
   });
+  const prevRound = useRef(estado.round);
 
   useEffect(() => {
     hablar("S.I.S. Sistema de Iniciativa");
   }, []);
+
+  // TTS reactivo: se dispara cuando cambia el turno real del estado
+  // Así el nombre anunciado siempre coincide con lo que muestra la UI
+  useEffect(() => {
+    if (estado.nombreAnunciado === null) return;
+    const esNuevoRound = estado.round > prevRound.current;
+    prevRound.current = estado.round;
+    if (esNuevoRound) {
+      hablar(`Nuevo round. ${estado.nombreAnunciado}, te toca`);
+    } else {
+      hablar(`${estado.nombreAnunciado}, te toca`);
+    }
+  }, [estado.turnoActual]); // turnoActual incrementa exactamente una vez por turno
 
   // Persiste participantes en localStorage cada vez que cambian
   useEffect(() => {
@@ -49,17 +62,6 @@ function App() {
   }
 
   function handleSiguienteTurno() {
-    // Verificar si al ejecutar quedará nuevo round
-    const activos = estado.participantes.filter((p) => p.pr > 0);
-    if (activos.length === 0) return;
-
-    // Revisar si va a haber nuevo round (todos son 0 tras este turno)
-    const resultado = seleccionarSiguiente(estado.participantes);
-    if (resultado.nuevoRound) {
-      hablar("Nuevo round");
-    } else if (resultado.seleccionado) {
-      hablar(`${resultado.seleccionado.nombre}, te toca`);
-    }
     dispatch({ type: "SIGUIENTE_TURNO" });
   }
 

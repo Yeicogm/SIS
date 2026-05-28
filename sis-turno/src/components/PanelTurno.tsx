@@ -9,9 +9,8 @@ interface Props {
 }
 
 export function PanelTurno({ participantes, round, turnoActual, onSiguienteTurno }: Props) {
-  const hayActivos = participantes.some((p) => p.pr > 0);
   const hayParticipantes = participantes.length > 0;
-  const habilitado = hayParticipantes && hayActivos;
+  const habilitado = hayParticipantes;
 
   return (
     <div className="panel-turno">
