@@ -1,29 +1,51 @@
-import { useReducer, useEffect } from 'react';
-import { reducer, estadoInicial } from './reducer';
-import { FormularioAgregar } from './components/FormularioAgregar';
-import { ListaParticipantes } from './components/ListaParticipantes';
-import { PanelTurno } from './components/PanelTurno';
-import { AnuncioActual } from './components/AnuncioActual';
-import { Historial } from './components/Historial';
-import { hablar } from './utils/hablar';
-import { seleccionarSiguiente } from './utils/seleccionarSiguiente';
-import { Participante } from './types';
-import { Trash2 } from 'lucide-react';
-import './App.css';
+import { useReducer, useEffect } from "react";
+import { reducer, estadoInicial } from "./reducer";
+import { FormularioAgregar } from "./components/FormularioAgregar";
+import { ListaParticipantes } from "./components/ListaParticipantes";
+import { PanelTurno } from "./components/PanelTurno";
+import { AnuncioActual } from "./components/AnuncioActual";
+import { Historial } from "./components/Historial";
+import { hablar } from "./utils/hablar";
+import { seleccionarSiguiente } from "./utils/seleccionarSiguiente";
+import { Participante } from "./types";
+import { Trash2 } from "lucide-react";
+import "./App.css";
+
+const LS_KEY = "sis-participantes";
+
+function cargarParticipantes(): Participante[] {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as Participante[];
+    // Restaurar PR al valor original al cargar (listos para nueva partida)
+    return parsed.map((p) => ({ ...p, pr: p.prOriginal }));
+  } catch {
+    return [];
+  }
+}
 
 function App() {
-  const [estado, dispatch] = useReducer(reducer, estadoInicial);
+  const [estado, dispatch] = useReducer(reducer, {
+    ...estadoInicial,
+    participantes: cargarParticipantes(),
+  });
 
   useEffect(() => {
-    hablar('S.I.S. Sistema de Iniciativa');
+    hablar("S.I.S. Sistema de Iniciativa");
   }, []);
 
+  // Persiste participantes en localStorage cada vez que cambian
+  useEffect(() => {
+    localStorage.setItem(LS_KEY, JSON.stringify(estado.participantes));
+  }, [estado.participantes]);
+
   function handleAgregarParticipante(p: Participante) {
-    dispatch({ type: 'AGREGAR_PARTICIPANTE', payload: p });
+    dispatch({ type: "AGREGAR_PARTICIPANTE", payload: p });
   }
 
   function handleEliminarParticipante(id: string) {
-    dispatch({ type: 'ELIMINAR_PARTICIPANTE', payload: id });
+    dispatch({ type: "ELIMINAR_PARTICIPANTE", payload: id });
   }
 
   function handleSiguienteTurno() {
@@ -34,16 +56,17 @@ function App() {
     // Revisar si va a haber nuevo round (todos son 0 tras este turno)
     const resultado = seleccionarSiguiente(estado.participantes);
     if (resultado.nuevoRound) {
-      hablar('Nuevo round');
+      hablar("Nuevo round");
     } else if (resultado.seleccionado) {
       hablar(`${resultado.seleccionado.nombre}, te toca`);
     }
-    dispatch({ type: 'SIGUIENTE_TURNO' });
+    dispatch({ type: "SIGUIENTE_TURNO" });
   }
 
   function handleLimpiar() {
-    hablar('Sesión terminada');
-    dispatch({ type: 'LIMPIAR_TODO' });
+    hablar("Sesión terminada");
+    localStorage.removeItem(LS_KEY);
+    dispatch({ type: "LIMPIAR_TODO" });
   }
 
   return (
@@ -60,18 +83,12 @@ function App() {
         {/* Columna izquierda */}
         <aside className="columna-izquierda">
           <FormularioAgregar onAgregar={handleAgregarParticipante} />
-          <ListaParticipantes
-            participantes={estado.participantes}
-            onEliminar={handleEliminarParticipante}
-          />
+          <ListaParticipantes participantes={estado.participantes} onEliminar={handleEliminarParticipante} />
         </aside>
 
         {/* Columna central */}
         <section className="columna-central">
-          <AnuncioActual
-            nombre={estado.nombreAnunciado}
-            esJugador={estado.esJugadorAnunciado}
-          />
+          <AnuncioActual nombre={estado.nombreAnunciado} esJugador={estado.esJugadorAnunciado} />
           <PanelTurno
             participantes={estado.participantes}
             round={estado.round}

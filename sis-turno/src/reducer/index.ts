@@ -1,11 +1,11 @@
-import { EstadoApp, Participante } from '../types';
-import { seleccionarSiguiente } from '../utils/seleccionarSiguiente';
+import { EstadoApp, Participante } from "../types";
+import { seleccionarSiguiente } from "../utils/seleccionarSiguiente";
 
 export type Accion =
-  | { type: 'AGREGAR_PARTICIPANTE'; payload: Participante }
-  | { type: 'ELIMINAR_PARTICIPANTE'; payload: string }
-  | { type: 'SIGUIENTE_TURNO' }
-  | { type: 'LIMPIAR_TODO' };
+  | { type: "AGREGAR_PARTICIPANTE"; payload: Participante }
+  | { type: "ELIMINAR_PARTICIPANTE"; payload: string }
+  | { type: "SIGUIENTE_TURNO" }
+  | { type: "LIMPIAR_TODO" };
 
 export const estadoInicial: EstadoApp = {
   participantes: [],
@@ -18,45 +18,35 @@ export const estadoInicial: EstadoApp = {
 
 export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
   switch (accion.type) {
-    case 'AGREGAR_PARTICIPANTE':
+    case "AGREGAR_PARTICIPANTE":
       return {
         ...estado,
         participantes: [...estado.participantes, accion.payload],
       };
 
-    case 'ELIMINAR_PARTICIPANTE':
+    case "ELIMINAR_PARTICIPANTE":
       return {
         ...estado,
-        participantes: estado.participantes.filter(
-          (p) => p.id !== accion.payload
-        ),
+        participantes: estado.participantes.filter((p) => p.id !== accion.payload),
         nombreAnunciado:
           estado.nombreAnunciado !== null &&
-          estado.participantes.find(
-            (p) => p.id === accion.payload
-          )?.nombre === estado.nombreAnunciado
+          estado.participantes.find((p) => p.id === accion.payload)?.nombre === estado.nombreAnunciado
             ? null
             : estado.nombreAnunciado,
         esJugadorAnunciado:
           estado.nombreAnunciado !== null &&
-          estado.participantes.find(
-            (p) => p.id === accion.payload
-          )?.nombre === estado.nombreAnunciado
+          estado.participantes.find((p) => p.id === accion.payload)?.nombre === estado.nombreAnunciado
             ? null
             : estado.esJugadorAnunciado,
       };
 
-    case 'SIGUIENTE_TURNO': {
+    case "SIGUIENTE_TURNO": {
       const resultado = seleccionarSiguiente(estado.participantes);
 
       if (resultado.nuevoRound) {
         // Ejecutar selección con los PR restaurados
-        const resultadoPostReinicio = seleccionarSiguiente(
-          resultado.actualizados
-        );
-        if (
-          resultadoPostReinicio.seleccionado === null
-        ) {
+        const resultadoPostReinicio = seleccionarSiguiente(resultado.actualizados);
+        if (resultadoPostReinicio.seleccionado === null) {
           return estado; // sin participantes
         }
         const nuevoTurnoJugado = {
@@ -95,7 +85,7 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
       };
     }
 
-    case 'LIMPIAR_TODO':
+    case "LIMPIAR_TODO":
       return { ...estadoInicial };
 
     default:

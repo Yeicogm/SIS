@@ -16,10 +16,12 @@
   --color-amarillo: #f39c12;
   --radio: 8px;
   --radio-lg: 12px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -294,10 +296,18 @@ body {
   white-space: nowrap;
 }
 
-.icono-jugador { color: var(--color-jugador); flex-shrink: 0; }
-.icono-enemigo { color: var(--color-enemigo); flex-shrink: 0; }
+.icono-jugador {
+  color: var(--color-jugador);
+  flex-shrink: 0;
+}
+.icono-enemigo {
+  color: var(--color-enemigo);
+  flex-shrink: 0;
+}
 
-.celda-pr { text-align: center; }
+.celda-pr {
+  text-align: center;
+}
 
 .badge-pr {
   display: inline-block;
@@ -396,15 +406,21 @@ body {
 .anuncio-fade-in {
   opacity: 1;
   transform: translateY(0) scale(1);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
 
 .anuncio-icono {
   opacity: 0.7;
 }
 
-.anuncio-jugador .anuncio-icono { color: var(--color-jugador); }
-.anuncio-enemigo .anuncio-icono { color: var(--color-enemigo); }
+.anuncio-jugador .anuncio-icono {
+  color: var(--color-jugador);
+}
+.anuncio-enemigo .anuncio-icono {
+  color: var(--color-enemigo);
+}
 
 .anuncio-nombre {
   font-size: 2.8rem;
@@ -415,8 +431,12 @@ body {
   word-break: break-word;
 }
 
-.anuncio-jugador .anuncio-nombre { color: var(--color-jugador); }
-.anuncio-enemigo .anuncio-nombre { color: var(--color-enemigo); }
+.anuncio-jugador .anuncio-nombre {
+  color: var(--color-jugador);
+}
+.anuncio-enemigo .anuncio-nombre {
+  color: var(--color-enemigo);
+}
 
 .anuncio-subtitulo {
   font-size: 1rem;
@@ -548,8 +568,12 @@ body {
   opacity: 0.7;
   flex-shrink: 0;
 }
-.item-jugador .historial-icono { color: var(--color-jugador); }
-.item-enemigo .historial-icono { color: var(--color-enemigo); }
+.item-jugador .historial-icono {
+  color: var(--color-jugador);
+}
+.item-enemigo .historial-icono {
+  color: var(--color-enemigo);
+}
 
 .historial-turno {
   color: var(--color-texto-muted);

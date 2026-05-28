@@ -1,6 +1,6 @@
-import { Trash2, User, Skull } from 'lucide-react';
-import { Participante } from '../types';
-import { hablar } from '../utils/hablar';
+import { Trash2, User, Skull } from "lucide-react";
+import { Participante } from "../types";
+import { hablar } from "../utils/hablar";
 
 interface Props {
   participantes: Participante[];
@@ -32,7 +32,7 @@ export function ListaParticipantes({ participantes, onEliminar }: Props) {
           </thead>
           <tbody>
             {ordenados.map((p) => (
-              <tr key={p.id} className={p.pr > 0 ? 'activo' : 'inactivo'}>
+              <tr key={p.id} className={p.pr > 0 ? "activo" : "inactivo"}>
                 <td className="celda-nombre">
                   {p.esJugador ? (
                     <User size={14} className="icono-jugador" />
@@ -42,13 +42,11 @@ export function ListaParticipantes({ participantes, onEliminar }: Props) {
                   {p.nombre}
                 </td>
                 <td className="celda-pr">
-                  <span className={`badge-pr ${p.pr > 0 ? 'pr-activo' : 'pr-cero'}`}>
-                    {p.pr}
-                  </span>
+                  <span className={`badge-pr ${p.pr > 0 ? "pr-activo" : "pr-cero"}`}>{p.pr}</span>
                 </td>
                 <td className="celda-tipo">
-                  <span className={`badge-tipo ${p.esJugador ? 'jugador' : 'enemigo'}`}>
-                    {p.esJugador ? 'Jugador' : 'Enemigo'}
+                  <span className={`badge-tipo ${p.esJugador ? "jugador" : "enemigo"}`}>
+                    {p.esJugador ? "Jugador" : "Enemigo"}
                   </span>
                 </td>
                 <td>

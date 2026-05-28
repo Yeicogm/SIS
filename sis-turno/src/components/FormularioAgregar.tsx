@@ -1,26 +1,26 @@
-import { useState } from 'react';
-import { UserPlus } from 'lucide-react';
-import { Participante } from '../types';
-import { generarId } from '../utils/seleccionarSiguiente';
-import { hablar } from '../utils/hablar';
+import { useState } from "react";
+import { UserPlus } from "lucide-react";
+import { Participante } from "../types";
+import { generarId } from "../utils/seleccionarSiguiente";
+import { hablar } from "../utils/hablar";
 
 interface Props {
   onAgregar: (p: Participante) => void;
 }
 
 export function FormularioAgregar({ onAgregar }: Props) {
-  const [nombre, setNombre] = useState('');
+  const [nombre, setNombre] = useState("");
   const [pr, setPr] = useState(3);
   const [esJugador, setEsJugador] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (nombre.trim().length < 2) {
-      setError('El nombre debe tener al menos 2 caracteres');
+      setError("El nombre debe tener al menos 2 caracteres");
       return;
     }
-    setError('');
+    setError("");
     const prFinal = Math.max(0, Math.min(99, pr));
     const nuevo: Participante = {
       id: generarId(),
@@ -31,7 +31,7 @@ export function FormularioAgregar({ onAgregar }: Props) {
     };
     onAgregar(nuevo);
     hablar(`Agregado: ${nuevo.nombre}`);
-    setNombre('');
+    setNombre("");
     setPr(3);
     setEsJugador(true);
   }
@@ -72,22 +72,12 @@ export function FormularioAgregar({ onAgregar }: Props) {
       <div className="campo">
         <label>Tipo</label>
         <div className="radio-grupo">
-          <label className={`radio-opcion ${esJugador ? 'activo jugador' : ''}`}>
-            <input
-              type="radio"
-              name="tipo"
-              checked={esJugador}
-              onChange={() => setEsJugador(true)}
-            />
+          <label className={`radio-opcion ${esJugador ? "activo jugador" : ""}`}>
+            <input type="radio" name="tipo" checked={esJugador} onChange={() => setEsJugador(true)} />
             Jugador
           </label>
-          <label className={`radio-opcion ${!esJugador ? 'activo enemigo' : ''}`}>
-            <input
-              type="radio"
-              name="tipo"
-              checked={!esJugador}
-              onChange={() => setEsJugador(false)}
-            />
+          <label className={`radio-opcion ${!esJugador ? "activo enemigo" : ""}`}>
+            <input type="radio" name="tipo" checked={!esJugador} onChange={() => setEsJugador(false)} />
             Enemigo
           </label>
         </div>

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { User, Skull } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { User, Skull } from "lucide-react";
 
 interface Props {
   nombre: string | null;
@@ -18,9 +18,11 @@ export function AnuncioActual({ nombre, esJugador }: Props) {
   }, [nombre]);
 
   return (
-    <div className={`anuncio-actual ${esJugador === true ? 'anuncio-jugador' : esJugador === false ? 'anuncio-enemigo' : 'anuncio-vacio'}`}>
+    <div
+      className={`anuncio-actual ${esJugador === true ? "anuncio-jugador" : esJugador === false ? "anuncio-enemigo" : "anuncio-vacio"}`}
+    >
       {nombre ? (
-        <div className={`anuncio-contenido ${animado ? 'anuncio-fade-in' : ''}`}>
+        <div className={`anuncio-contenido ${animado ? "anuncio-fade-in" : ""}`}>
           {esJugador ? (
             <User size={40} className="anuncio-icono" />
           ) : (

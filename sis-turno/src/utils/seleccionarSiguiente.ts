@@ -1,4 +1,4 @@
-import { Participante } from '../types';
+import { Participante } from "../types";
 
 interface ResultadoSeleccion {
   seleccionado: Participante | null;
@@ -6,9 +6,7 @@ interface ResultadoSeleccion {
   nuevoRound: boolean;
 }
 
-export function seleccionarSiguiente(
-  participantes: Participante[]
-): ResultadoSeleccion {
+export function seleccionarSiguiente(participantes: Participante[]): ResultadoSeleccion {
   const activos = participantes.filter((p) => p.pr > 0);
 
   if (activos.length === 0) {
