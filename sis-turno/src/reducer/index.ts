@@ -46,7 +46,8 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
       if (estado.esperandoNuevoRound) {
         const resultado = seleccionarSiguiente(estado.participantes);
         if (resultado.seleccionado === null) return estado;
-        const vecesNuevas = resultado.actualizados.find((p) => p.id === resultado.seleccionado!.id)?.vecesJugadas ?? 1;
+        const vecesNuevas =
+          resultado.actualizados.find((p) => p.id === resultado.seleccionado!.id)?.vecesJugadas ?? 1;
         const nuevoTurno = {
           turnoNumero: estado.turnoActual,
           nombre: resultado.seleccionado.nombre,
@@ -82,7 +83,8 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
 
       if (resultado.seleccionado === null) return estado;
 
-      const vecesNuevas2 = resultado.actualizados.find((p) => p.id === resultado.seleccionado!.id)?.vecesJugadas ?? 1;
+      const vecesNuevas2 =
+        resultado.actualizados.find((p) => p.id === resultado.seleccionado!.id)?.vecesJugadas ?? 1;
       const nuevoTurnoJugado = {
         turnoNumero: estado.turnoActual,
         nombre: resultado.seleccionado.nombre,

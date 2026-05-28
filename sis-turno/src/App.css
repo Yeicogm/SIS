@@ -737,7 +737,7 @@ body {
   font-size: 0.65rem;
   font-weight: 700;
   color: var(--color-texto-muted);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
   padding: 1px 5px;
   white-space: nowrap;
