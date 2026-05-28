@@ -15,6 +15,7 @@ export interface TurnoJugado {
   timestamp: Date;
   round: number;
   vecesJugadas: number;
+  evento?: "turno" | "herido" | "recuperado";
 }
 
 export interface EstadoApp {

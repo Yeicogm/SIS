@@ -125,15 +125,26 @@ export function reducer(estado: EstadoApp, accion: Accion): EstadoApp {
     }
 
     case "TOGGLE_HERIDO": {
+      const objetivo = estado.participantes.find((p) => p.id === accion.payload);
+      if (!objetivo) return estado;
+      const quitarHerido = objetivo.herido === true;
+      const entradaHistorial = {
+        turnoNumero: estado.turnoActual,
+        nombre: objetivo.nombre,
+        esJugador: objetivo.esJugador,
+        timestamp: new Date(),
+        round: estado.round,
+        vecesJugadas: objetivo.vecesJugadas,
+        evento: quitarHerido ? ("recuperado" as const) : ("herido" as const),
+      };
       return {
         ...estado,
+        historial: [entradaHistorial, ...estado.historial].slice(0, 50),
         participantes: estado.participantes.map((p) => {
           if (p.id !== accion.payload) return p;
-          if (p.herido) {
-            // Quitar herido: restaurar PR original
+          if (quitarHerido) {
             return { ...p, herido: false, pr: p.prOriginal };
           } else {
-            // Marcar herido: bajar PR a la mitad (mínimo 1)
             return { ...p, herido: true, pr: Math.max(1, Math.floor(p.prOriginal / 2)) };
           }
         }),

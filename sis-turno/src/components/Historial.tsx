@@ -1,4 +1,4 @@
-import { User, Skull } from "lucide-react";
+import { User, Skull, HeartCrack, HeartPulse } from "lucide-react";
 import { TurnoJugado } from "../types";
 
 interface Props {
@@ -17,7 +17,23 @@ export function Historial({ historial }: Props) {
         <ul className="historial-lista">
           {historial.map((t, i) => {
             const siguiente = historial[i + 1];
-            const cambioDeRound = siguiente && siguiente.round !== t.round;
+            const evento = t.evento ?? "turno";
+
+            if (evento === "herido" || evento === "recuperado") {
+              const esRecuperado = evento === "recuperado";
+              return (
+                <li key={i} className={`historial-item item-evento-${evento}`}>
+                  <span className="historial-icono">
+                    {esRecuperado ? <HeartPulse size={12} /> : <HeartCrack size={12} />}
+                  </span>
+                  <span className="historial-nombre">{t.nombre}</span>
+                  <span className="historial-ataque">{esRecuperado ? "recuperado" : "herido"}</span>
+                </li>
+              );
+            }
+
+            const cambioDeRound =
+              siguiente && (siguiente.evento ?? "turno") === "turno" && siguiente.round !== t.round;
             return (
               <>
                 <li key={i} className={`historial-item ${t.esJugador ? "item-jugador" : "item-enemigo"}`}>

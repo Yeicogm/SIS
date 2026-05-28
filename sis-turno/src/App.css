@@ -757,6 +757,30 @@ tr.herido .badge-pr {
   border-left-color: var(--color-enemigo);
 }
 
+.item-evento-herido {
+  background: rgba(243, 156, 18, 0.07);
+  border-left-color: var(--color-amarillo);
+}
+.item-evento-herido .historial-icono {
+  color: var(--color-amarillo);
+  opacity: 0.85;
+}
+.item-evento-herido .historial-ataque {
+  color: var(--color-amarillo);
+}
+
+.item-evento-recuperado {
+  background: rgba(39, 174, 96, 0.07);
+  border-left-color: var(--color-exito);
+}
+.item-evento-recuperado .historial-icono {
+  color: var(--color-exito);
+  opacity: 0.85;
+}
+.item-evento-recuperado .historial-ataque {
+  color: var(--color-exito);
+}
+
 .historial-icono {
   opacity: 0.7;
   flex-shrink: 0;
