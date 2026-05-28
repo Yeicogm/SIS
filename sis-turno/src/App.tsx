@@ -41,10 +41,14 @@ function App() {
     }
   }, [estado.esperandoNuevoRound, estado.round]);
 
+  const ultimoAnunciadoRef = useRef<string | null>(null);
+
   // TTS: anuncia al participante seleccionado
   useEffect(() => {
     if (estado.nombreAnunciado === null) return;
-    hablar(`${estado.nombreAnunciado}, te toca`);
+    const otraVez = estado.nombreAnunciado === ultimoAnunciadoRef.current;
+    hablar(otraVez ? `${estado.nombreAnunciado}, ¡otra vez!` : `${estado.nombreAnunciado}, te toca`);
+    ultimoAnunciadoRef.current = estado.nombreAnunciado;
   }, [estado.turnoActual]);
 
   // Persiste participantes en localStorage cada vez que cambian
@@ -94,6 +98,9 @@ function App() {
             esJugador={estado.esJugadorAnunciado}
             esperandoNuevoRound={estado.esperandoNuevoRound}
             round={estado.round}
+            otraVez={
+              estado.nombreAnunciado !== null && estado.nombreAnunciado === estado.historial[1]?.nombre
+            }
           />
           <PanelTurno
             participantes={estado.participantes}

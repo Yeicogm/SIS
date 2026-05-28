@@ -6,9 +6,10 @@ interface Props {
   esJugador: boolean | null;
   esperandoNuevoRound: boolean;
   round: number;
+  otraVez?: boolean;
 }
 
-export function AnuncioActual({ nombre, esJugador, esperandoNuevoRound, round }: Props) {
+export function AnuncioActual({ nombre, esJugador, esperandoNuevoRound, round, otraVez }: Props) {
   const [animado, setAnimado] = useState(false);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export function AnuncioActual({ nombre, esJugador, esperandoNuevoRound, round }:
             <Skull size={40} className="anuncio-icono" />
           )}
           <p className="anuncio-nombre">{nombre}</p>
-          <p className="anuncio-subtitulo">¡Te toca!</p>
+          <p className="anuncio-subtitulo">{otraVez ? "¡Otra vez!" : "¡Te toca!"}</p>
         </div>
       ) : (
         <div className="anuncio-esperando">

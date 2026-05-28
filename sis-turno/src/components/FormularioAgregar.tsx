@@ -10,7 +10,7 @@ interface Props {
 
 export function FormularioAgregar({ onAgregar }: Props) {
   const [nombre, setNombre] = useState("");
-  const [pr, setPr] = useState(3);
+  const [pr, setPr] = useState(10);
   const [esJugador, setEsJugador] = useState(true);
   const [error, setError] = useState("");
 
@@ -59,7 +59,7 @@ export function FormularioAgregar({ onAgregar }: Props) {
       </div>
 
       <div className="campo">
-        <label htmlFor="pr">PR (Puntos de Ritmo)</label>
+        <label htmlFor="pr">PR (Puntos de Reacción)</label>
         <input
           id="pr"
           type="number"

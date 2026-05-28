@@ -518,6 +518,108 @@ body {
   font-size: 1.1rem;
 }
 
+.contador-prt {
+  cursor: help;
+  border-bottom: 1px dashed var(--color-texto-muted);
+}
+
+.contador-prt strong {
+  color: var(--color-amarillo);
+}
+
+.prt-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-texto-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: inherit;
+  line-height: 1;
+}
+
+.prt-hint:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.prt-popover {
+  position: relative;
+  background: var(--color-panel);
+  border: 1px solid var(--color-amarillo);
+  border-radius: var(--radio-md);
+  padding: 14px 16px 12px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  width: 100%;
+  margin-top: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.prt-popover-cerrar {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--color-texto-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0;
+  line-height: 1;
+}
+
+.prt-popover-cerrar:hover {
+  color: #fff;
+}
+
+.prt-popover-titulo {
+  font-weight: 700;
+  color: var(--color-amarillo);
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+}
+
+.prt-popover-lista {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.prt-popover-lista li {
+  color: var(--color-texto-secundario);
+}
+
+.prt-popover-lista strong {
+  color: var(--color-texto-principal);
+}
+
+.prt-nota {
+  font-size: 0.72rem;
+  color: var(--color-exito);
+  margin-left: 4px;
+}
+
+.prt-ejemplo {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-texto-muted);
+  font-style: italic;
+  border-top: 1px solid var(--color-panel-borde);
+  padding-top: 6px;
+}
+
 .btn-turno {
   display: flex;
   align-items: center;
@@ -693,6 +795,8 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 
 .prob-rojo .prob-nombre {
@@ -740,6 +844,14 @@ body {
   font-weight: 500;
   font-size: 0.78rem;
   padding: 2px 0;
+  gap: 6px;
+}
+
+.prob-jugadas-count {
+  color: #4a6fa5;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 /* =============================================

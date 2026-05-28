@@ -1,5 +1,7 @@
 import { Participante } from "../types";
 
+export const PR_X_TURNO = 13;
+
 interface ResultadoSeleccion {
   seleccionado: Participante | null;
   actualizados: Participante[];
@@ -30,14 +32,22 @@ export function seleccionarSiguiente(participantes: Participante[]): ResultadoSe
   const indice = Math.floor(Math.random() * listaPonderada.length);
   const seleccionado = listaPonderada[indice];
 
-  // Actualizar PR: seleccionado → 0 y vecesJugadas++, demás activos → PR - 1 (mínimo 1 si aún no han jugado)
   const actualizados = participantes.map((p) => {
+    const veces = p.vecesJugadas ?? 0;
+
     if (p.id === seleccionado.id) {
-      return { ...p, pr: 0, vecesJugadas: (p.vecesJugadas ?? 0) + 1 };
+      // Seleccionado: PR baja por PRxTurno + (acciones previas * 2), nunca menos de 0
+      const nuevoPR = Math.max(0, p.pr - PR_X_TURNO - veces * 2);
+      return { ...p, pr: nuevoPR, vecesJugadas: veces + 1 };
     } else if (p.pr > 0) {
-      // Si aún no ha jugado en este round, su PR no baja de 1
-      const minPR = (p.vecesJugadas ?? 0) === 0 ? 1 : 0;
-      return { ...p, pr: Math.max(minPR, p.pr - 1) };
+      if (veces === 0) {
+        // Aún no ha jugado: PR no puede bajar de 1
+        return { ...p, pr: Math.max(1, p.pr - 1) };
+      } else {
+        // Ya jugó: decay más rápido según las veces que lleva jugadas
+        const nuevoPR = p.pr < 3 ? Math.max(0, p.pr - 1) : Math.max(0, p.pr - 1 - veces);
+        return { ...p, pr: nuevoPR };
+      }
     }
     return p;
   });

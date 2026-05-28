@@ -45,7 +45,9 @@ export function ListaParticipantes({ participantes, onEliminar }: Props) {
                   <span className={`badge-pr ${p.pr > 0 ? "pr-activo" : "pr-cero"}`}>{p.pr}</span>
                 </td>
                 <td className="celda-jugadas">
-                  <span className={`badge-jugadas ${(p.vecesJugadas ?? 0) === 0 ? "jugadas-cero" : "jugadas-ok"}`}>
+                  <span
+                    className={`badge-jugadas ${(p.vecesJugadas ?? 0) === 0 ? "jugadas-cero" : "jugadas-ok"}`}
+                  >
                     {p.vecesJugadas ?? 0}
                   </span>
                 </td>

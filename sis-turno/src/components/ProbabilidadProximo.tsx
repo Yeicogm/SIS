@@ -30,7 +30,7 @@ export function ProbabilidadProximo({ participantes }: Props) {
   if (participantes.length === 0) return null;
 
   const activos = [...participantes].filter((p) => p.pr > 0).sort((a, b) => b.pr - a.pr);
-  const yaJugaron = participantes.filter((p) => p.pr === 0);
+  const yaJugaron = participantes.filter((p) => (p.vecesJugadas ?? 0) >= 1);
   const totalPR = activos.reduce((sum, p) => sum + p.pr, 0);
   const { aviso } = calcularVelocidadGrupo(participantes);
 
@@ -69,6 +69,7 @@ export function ProbabilidadProximo({ participantes }: Props) {
             {yaJugaron.map((p) => (
               <li key={p.id} className="prob-item prob-jugado">
                 <span className="prob-nombre">{p.nombre}</span>
+                <span className="prob-jugadas-count">{p.vecesJugadas}×</span>
               </li>
             ))}
           </ul>
