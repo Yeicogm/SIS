@@ -1,1 +1,29 @@
 SISvb/
+
+# Dependencias
+node_modules/
+
+# Build outputs
+sis-turno/dist/
+sis-turno/dist-ssr/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Entorno local
+.env
+.env.local
+.env.*.local
+
+# Cache Vite
+sis-turno/.vite/
+
+# Editor
+.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+

@@ -1,0 +1,597 @@
+/* =============================================
+   VARIABLES Y RESET
+   ============================================= */
+:root {
+  --color-jugador: #3498db;
+  --color-enemigo: #e74c3c;
+  --color-exito: #27ae60;
+  --color-fondo: #1a1f2e;
+  --color-fondo-alt: #232837;
+  --color-texto: #ecf0f1;
+  --color-texto-muted: #8899aa;
+  --color-panel: #2c3348;
+  --color-panel-borde: #3d4f6b;
+  --color-borde: #1abc9c;
+  --color-borde-dim: #2d5a4e;
+  --color-amarillo: #f39c12;
+  --radio: 8px;
+  --radio-lg: 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  min-height: 100vh;
+}
+
+/* =============================================
+   LAYOUT PRINCIPAL
+   ============================================= */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--color-panel);
+  border-bottom: 2px solid var(--color-borde);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-titulo {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--color-borde);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 240px;
+  gap: 16px;
+  padding: 16px;
+  flex: 1;
+  align-items: start;
+}
+
+.columna-izquierda {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.columna-central {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.columna-derecha {
+  display: flex;
+  flex-direction: column;
+}
+
+/* =============================================
+   PANEL BASE
+   ============================================= */
+.formulario-agregar,
+.lista-participantes,
+.panel-turno,
+.historial {
+  background: var(--color-panel);
+  border: 1px solid var(--color-panel-borde);
+  border-radius: var(--radio-lg);
+  padding: 16px;
+}
+
+/* =============================================
+   FORMULARIO
+   ============================================= */
+.formulario-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-borde);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.campo label {
+  font-size: 0.78rem;
+  color: var(--color-texto-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.campo input[type="text"],
+.campo input[type="number"] {
+  background: var(--color-fondo);
+  border: 1px solid var(--color-panel-borde);
+  border-radius: var(--radio);
+  color: var(--color-texto);
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.campo input:focus {
+  border-color: var(--color-borde);
+}
+
+.error-msg {
+  font-size: 0.75rem;
+  color: var(--color-enemigo);
+  margin-top: 2px;
+}
+
+/* Radio buttons */
+.radio-grupo {
+  display: flex;
+  gap: 8px;
+}
+
+.radio-opcion {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radio);
+  border: 1px solid var(--color-panel-borde);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.radio-opcion input[type="radio"] {
+  display: none;
+}
+
+.radio-opcion.activo.jugador {
+  background: rgba(52, 152, 219, 0.2);
+  border-color: var(--color-jugador);
+  color: var(--color-jugador);
+}
+
+.radio-opcion.activo.enemigo {
+  background: rgba(231, 76, 60, 0.2);
+  border-color: var(--color-enemigo);
+  color: var(--color-enemigo);
+}
+
+.radio-opcion:not(.activo):hover {
+  border-color: var(--color-borde-dim);
+}
+
+/* =============================================
+   BOTONES
+   ============================================= */
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radio);
+  border: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-agregar {
+  width: 100%;
+  justify-content: center;
+  background: var(--color-borde);
+  color: #0a1a15;
+  font-size: 0.9rem;
+  padding: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.btn-agregar:hover {
+  background: #16d4b0;
+}
+
+.btn-limpiar {
+  background: rgba(231, 76, 60, 0.15);
+  color: var(--color-enemigo);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+}
+
+.btn-limpiar:hover {
+  background: rgba(231, 76, 60, 0.3);
+}
+
+/* =============================================
+   LISTA DE PARTICIPANTES
+   ============================================= */
+.lista-titulo,
+.historial-titulo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-borde);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+}
+
+.sin-datos {
+  color: var(--color-texto-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 12px 0;
+}
+
+.tabla-participantes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tabla-participantes th {
+  text-align: left;
+  color: var(--color-texto-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  padding: 0 6px 8px;
+  letter-spacing: 0.05em;
+}
+
+.tabla-participantes tr {
+  border-top: 1px solid var(--color-panel-borde);
+  transition: background 0.1s;
+}
+
+.tabla-participantes tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tabla-participantes td {
+  padding: 7px 6px;
+  vertical-align: middle;
+}
+
+.celda-nombre {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icono-jugador { color: var(--color-jugador); flex-shrink: 0; }
+.icono-enemigo { color: var(--color-enemigo); flex-shrink: 0; }
+
+.celda-pr { text-align: center; }
+
+.badge-pr {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.pr-activo {
+  background: rgba(39, 174, 96, 0.2);
+  color: #2ecc71;
+  border: 1px solid rgba(39, 174, 96, 0.4);
+}
+
+.pr-cero {
+  background: rgba(255, 200, 0, 0.1);
+  color: var(--color-amarillo);
+  border: 1px solid rgba(243, 156, 18, 0.4);
+}
+
+.badge-tipo {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-tipo.jugador {
+  background: rgba(52, 152, 219, 0.15);
+  color: var(--color-jugador);
+  border: 1px solid rgba(52, 152, 219, 0.35);
+}
+
+.badge-tipo.enemigo {
+  background: rgba(231, 76, 60, 0.15);
+  color: var(--color-enemigo);
+  border: 1px solid rgba(231, 76, 60, 0.35);
+}
+
+.btn-eliminar {
+  background: none;
+  border: none;
+  color: var(--color-texto-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.btn-eliminar:hover {
+  color: var(--color-enemigo);
+  background: rgba(231, 76, 60, 0.1);
+}
+
+/* =============================================
+   ANUNCIO ACTUAL
+   ============================================= */
+.anuncio-actual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  border-radius: var(--radio-lg);
+  border: 2px solid var(--color-panel-borde);
+  transition: all 0.3s ease;
+}
+
+.anuncio-jugador {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(52, 152, 219, 0.05));
+  border-color: var(--color-jugador);
+}
+
+.anuncio-enemigo {
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(231, 76, 60, 0.05));
+  border-color: var(--color-enemigo);
+}
+
+.anuncio-vacio {
+  background: var(--color-panel);
+}
+
+.anuncio-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+}
+
+.anuncio-fade-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.anuncio-icono {
+  opacity: 0.7;
+}
+
+.anuncio-jugador .anuncio-icono { color: var(--color-jugador); }
+.anuncio-enemigo .anuncio-icono { color: var(--color-enemigo); }
+
+.anuncio-nombre {
+  font-size: 2.8rem;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.1;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.anuncio-jugador .anuncio-nombre { color: var(--color-jugador); }
+.anuncio-enemigo .anuncio-nombre { color: var(--color-enemigo); }
+
+.anuncio-subtitulo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-texto-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.anuncio-esperando {
+  color: var(--color-texto-muted);
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
+/* =============================================
+   PANEL TURNO
+   ============================================= */
+.panel-turno {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.contadores {
+  display: flex;
+  gap: 20px;
+}
+
+.contador {
+  font-size: 0.9rem;
+  color: var(--color-texto-muted);
+}
+
+.contador strong {
+  color: var(--color-borde);
+  font-size: 1.1rem;
+}
+
+.btn-turno {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border-radius: var(--radio-lg);
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+
+.btn-turno-activo {
+  background: var(--color-exito);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(39, 174, 96, 0.35);
+}
+
+.btn-turno-activo:hover {
+  background: #2ecc71;
+  box-shadow: 0 4px 24px rgba(39, 174, 96, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-turno-activo:active {
+  transform: translateY(1px);
+}
+
+.btn-turno-disabled {
+  background: var(--color-panel-borde);
+  color: var(--color-texto-muted);
+  cursor: not-allowed;
+}
+
+.hint-turno {
+  font-size: 0.78rem;
+  color: var(--color-texto-muted);
+  font-style: italic;
+}
+
+/* =============================================
+   HISTORIAL
+   ============================================= */
+.historial-lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.historial-lista::-webkit-scrollbar {
+  width: 4px;
+}
+.historial-lista::-webkit-scrollbar-track {
+  background: transparent;
+}
+.historial-lista::-webkit-scrollbar-thumb {
+  background: var(--color-panel-borde);
+  border-radius: 2px;
+}
+
+.historial-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: var(--radio);
+  font-size: 0.8rem;
+  border-left: 2px solid transparent;
+}
+
+.item-jugador {
+  background: rgba(52, 152, 219, 0.07);
+  border-left-color: var(--color-jugador);
+}
+
+.item-enemigo {
+  background: rgba(231, 76, 60, 0.07);
+  border-left-color: var(--color-enemigo);
+}
+
+.historial-icono {
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+.item-jugador .historial-icono { color: var(--color-jugador); }
+.item-enemigo .historial-icono { color: var(--color-enemigo); }
+
+.historial-turno {
+  color: var(--color-texto-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 28px;
+}
+
+.historial-nombre {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =============================================
+   RESPONSIVIDAD
+   ============================================= */
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .columna-derecha {
+    grid-column: 1 / -1;
+  }
+  .historial-lista {
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .columna-derecha {
+    grid-column: 1;
+  }
+  .anuncio-nombre {
+    font-size: 2rem;
+  }
+  .header-titulo {
+    font-size: 0.95rem;
+  }
+}
