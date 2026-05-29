@@ -62,6 +62,22 @@ body {
   text-transform: uppercase;
 }
 
+.header-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-archivo {
+  background: rgba(26, 188, 156, 0.15);
+  color: var(--color-borde);
+  border: 1px solid rgba(26, 188, 156, 0.4);
+}
+
+.btn-archivo:hover {
+  background: rgba(26, 188, 156, 0.3);
+}
+
 .layout {
   display: grid;
   grid-template-columns: 340px 1fr 240px;
@@ -234,6 +250,10 @@ body {
 
 .btn-limpiar:hover {
   background: rgba(231, 76, 60, 0.3);
+}
+
+.btn-limpiar:active {
+  background: rgba(231, 76, 60, 0.45);
 }
 
 /* =============================================

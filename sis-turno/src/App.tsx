@@ -7,8 +7,9 @@ import { AnuncioActual } from "./components/AnuncioActual";
 import { Historial } from "./components/Historial";
 import { ProbabilidadProximo } from "./components/ProbabilidadProximo";
 import { hablar } from "./utils/hablar";
+import { descargarParticipantes, cargarParticipantesDesdeArchivo } from "./utils/archivo";
 import { Participante } from "./types";
-import { Trash2 } from "lucide-react";
+import { Trash2, Save, FolderOpen } from "lucide-react";
 import "./App.css";
 
 const LS_KEY = "sis-participantes";
@@ -73,18 +74,45 @@ function App() {
   }
 
   function handleLimpiar() {
+    if (!confirm("¿Limpiar toda la sesión? Esto eliminará todos los participantes.")) return;
     hablar("Sesión terminada");
     dispatch({ type: "LIMPIAR_TODO" });
+  }
+
+  function handleGuardarArchivo() {
+    if (!confirm("¿Guardar participantes en archivo?")) return;
+    descargarParticipantes(estado.participantes);
+    hablar("Archivo guardado");
+  }
+
+  function handleCargarArchivo() {
+    if (!confirm("¿Cargar participantes desde archivo? La sesión actual se limpiará.")) return;
+    cargarParticipantesDesdeArchivo().then((data) => {
+      if (!data) return;
+      dispatch({ type: "LIMPIAR_TODO" });
+      data.forEach((p) => dispatch({ type: "AGREGAR_PARTICIPANTE", payload: p }));
+      hablar(`${data.length} participantes cargados`);
+    });
   }
 
   return (
     <div className="app">
       <header className="header">
         <h1 className="header-titulo">⚔ SIS — Sistema de Iniciativa Stróm</h1>
-        <button className="btn btn-limpiar" onClick={handleLimpiar} title="Limpiar todo">
-          <Trash2 size={16} />
-          Limpiar
-        </button>
+        <div className="header-acciones">
+          <button className="btn btn-archivo" onClick={handleGuardarArchivo} title="Guardar en archivo">
+            <Save size={16} />
+            Guardar
+          </button>
+          <button className="btn btn-archivo" onClick={handleCargarArchivo} title="Cargar desde archivo">
+            <FolderOpen size={16} />
+            Cargar
+          </button>
+          <button className="btn btn-limpiar" onClick={handleLimpiar} title="Limpiar todo">
+            <Trash2 size={16} />
+            Limpiar
+          </button>
+        </div>
       </header>
 
       <main className="layout">
