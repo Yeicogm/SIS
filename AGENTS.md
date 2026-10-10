@@ -283,8 +283,8 @@ hablar(texto: string): void  // Web Speech API, lang="es-ES"
 - Sección "YA JUGARON" con los que tienen `vecesJugadas >= 1`
 - Aviso de velocidad de grupo si el diferencial > 1
 - La función `calcularVelocidadGrupo` **debe** usar el mismo umbral que
-  [`calcularPRxTurno`](sis-turno/src/reducer/index.ts#L4-L14) (`>= 2` por bando), igual que
-  el VB original ([Form1.vb:740](SISvb/Form1.vb#L740)). Mantener ambos sincronizados.
+  [`calcularPRxTurno`](sis-turno/src/reducer/index.ts#L4-L14) (`>= 2` por bando), igual que el VB original
+  ([Form1.vb:740](SISvb/Form1.vb#L740)). Mantener ambos sincronizados.
 
 ### `<Historial historial>`
 
