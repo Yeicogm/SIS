@@ -35,12 +35,14 @@ sis-turno/
     ├── App.tsx                           — componente raíz, gestiona todo el estado global
     ├── App.css                           — todos los estilos (CSS plano, sin módulos ni Tailwind)
     ├── types/
-    │   └── index.ts                      — interfaces TypeScript: Participante, TurnoJugado, EstadoApp
+    │   ├── index.ts                      — interfaces TypeScript: Participante, TurnoJugado, EstadoApp
+    │   └── FileSystemAccess.d.ts         — declaraciones ambient (File System Access API) — actualmente sin uso
     ├── reducer/
     │   └── index.ts                      — reducer principal + estado inicial + cálculo de PRxTurno
     ├── utils/
     │   ├── seleccionarSiguiente.ts       — algoritmo de selección ponderada + generarId
-    │   └── hablar.ts                     — wrapper de Web Speech API
+    │   ├── hablar.ts                     — wrapper de Web Speech API
+    │   └── archivo.ts                    — descargar/cargar plantel a archivo .sis (JSON)
     └── components/
         ├── FormularioAgregar.tsx         — formulario para añadir participantes
         ├── ListaParticipantes.tsx        — tabla de participantes con acciones
@@ -110,9 +112,11 @@ PR_X_TURNO = 13; // penalización base al seleccionado
 4. Elegir índice aleatorio uniforme → `seleccionado`
 5. Actualizar todos los PR:
    - **Seleccionado**: `pr = max(0, pr - prxTurno - vecesJugadas * 2)` → incrementar `vecesJugadas`
-   - **Sin jugar aún** (`vecesJugadas === 0`): `pr = max(1, pr - 1)` _(nunca llega a 0 antes de jugar)_
+   - **Sin jugar aún** (`pr > 0 && vecesJugadas === 0`): `pr = max(1, pr - 1)` _(nunca llega a 0 antes de
+     jugar)_
    - **Ya jugó, `pr >= 3`**: `pr = max(0, pr - 1 - vecesJugadas)`
    - **Ya jugó, `pr < 3`**: `pr = max(0, pr - 1)`
+   - **Con `pr === 0`**: sin cambios (`return p`)
 
 ### Cálculo dinámico de `prxTurno`
 
@@ -144,20 +148,53 @@ El ajuste penaliza menos al grupo más rápido para equilibrar la frecuencia de 
 Estado normal
     └─ seleccionarSiguiente()
            ├─ nuevoRound=false → anuncia ganador, actualiza historial
-           └─ nuevoRound=true  → esperandoNuevoRound=true, round++
+           └─ nuevoRound=true  → esperandoNuevoRound=true, round++,
+                                 prxTurno=PR_X_TURNO, nombreAnunciado=null
 
 Estado esperandoNuevoRound=true
     └─ seleccionarSiguiente() con PR recalculado → anuncia ganador, esperandoNuevoRound=false
 ```
 
+> Detalle: en estado normal, el reducer reutiliza `estado.prxTurno` para turnos siguientes y solo lo recalcula
+> cuando `historial.length === 0` (primer turno de la sesión) o cuando se acaba de iniciar un nuevo round.
+
 ---
 
 ## 6. Persistencia
 
+La app soporta **dos niveles** de persistencia:
+
+### 6.1 `localStorage` (automático, transparente)
+
 - **Participantes** se guardan en `localStorage` (clave `"sis-participantes"`) cada vez que cambia el array.
 - Al cargar la app, los PR se restauran a `prOriginal` y `vecesJugadas` se resetea a `0` (listos para nueva
   partida).
-- El historial, round y turnoActual **no se persisten** (se pierden al recargar).
+- El historial, round y `turnoActual` **no se persisten** (se pierden al recargar).
+
+### 6.2 Archivo `.sis` (botones Guardar / Cargar en el header)
+
+[`src/utils/archivo.ts`](sis-turno/src/utils/archivo.ts) exporta dos funciones:
+
+- **`descargarParticipantes(participantes)`** — serializa el array a JSON, lo envuelve en un `Blob`, crea un
+  `<a download="participantes.sis">` y dispara un click. Nombre de archivo fijo: `participantes.sis`.
+- **`cargarParticipantesDesdeArchivo()`** — abre un `<input type="file" accept=".sis,.json">` con
+  `input.showPicker()`. Lee el archivo, parsea JSON, y devuelve un array sanitizado.
+
+> Nota: existe [`src/types/FileSystemAccess.d.ts`](sis-turno/src/types/FileSystemAccess.d.ts) que declara
+> `showSaveFilePicker`/`showOpenFilePicker`, pero **no se usa** en el código actual — la app usa el enfoque
+> clásico con `<input type="file">` + `<a download>` para máxima compatibilidad de navegadores.
+
+### Sanitización al cargar
+
+Al importar un `.sis`, cada participante es saneado:
+
+- Se regenera el `id` con `generarId()` (evita colisiones con participantes ya presentes).
+- Faltan campos → defaults: `pr = prOriginal = 3`, `esJugador = true`.
+- `vecesJugadas` se fuerza a `0`.
+- `herido` (opcional) se preserva si está presente.
+
+Tras cargar, `App.handleCargarArchivo` pide confirmación y luego hace `LIMPIAR_TODO` + reinserta los
+participantes. Anuncia por voz `"N participantes cargados"`.
 
 ---
 
@@ -178,9 +215,17 @@ hablar(texto: string): void  // Web Speech API, lang="es-ES"
 | Turno (1ª vez)        | `"[nombre], te toca"`                                   |
 | Turno repetido        | `"[nombre], ¡otra vez!"`                                |
 | Nuevo round           | `"Round [N]. Ajusta participantes cuando estés listo."` |
+| Guardar archivo       | `"Archivo guardado"`                                    |
+| Cargar archivo        | `"N participantes cargados"`                            |
 | Limpiar todo          | `"Sesión terminada"`                                    |
 
-El TTS compara `nombreAnunciado` con `historial[1]?.nombre` para detectar repetición.
+### Detección de repetición ("¡otra vez!")
+
+- En el **TTS** se usa un `useRef` (`ultimoAnunciadoRef`) en [App.tsx](sis-turno/src/App.tsx): si el
+  `nombreAnunciado` actual coincide con el último anunciado por voz, se dice `"[nombre], ¡otra vez!"`; si no,
+  `"[nombre], te toca"`. El ref se actualiza después de cada anuncio.
+- En el **componente `<AnuncioActual>`** (visual) se compara
+  `estado.nombreAnunciado === estado.historial[1]?.nombre` para mostrar el texto "¡Te toca!" o "¡Otra vez!".
 
 ---
 
@@ -189,9 +234,19 @@ El TTS compara `nombreAnunciado` con `historial[1]?.nombre` para detectar repeti
 ### `<App>` — `src/App.tsx`
 
 - Único componente con acceso al `reducer`
-- Maneja la lógica de TTS via `useEffect`
-- Lee/escribe `localStorage`
+- Maneja la lógica de TTS via `useEffect` (tres: montaje, `esperandoNuevoRound`, `turnoActual`)
+- Lee/escribe `localStorage` (clave `"sis-participantes"`)
 - Pasa handlers hacia abajo como props
+- **Header** contiene tres botones de icono: `Save` (Guardar), `FolderOpen` (Cargar), `Trash2` (Limpiar)
+- Handlers principales:
+  - `handleAgregarParticipante`, `handleEliminarParticipante`, `handleToggleHerido`
+  - `handleSiguienteTurno`
+  - `handleLimpiar` — pide `confirm()` y anuncia `"Sesión terminada"`
+  - `handleGuardarArchivo` — invoca `descargarParticipantes()`; anuncia `"Archivo guardado"`
+  - `handleCargarArchivo` — invoca `cargarParticipantesDesdeArchivo()`; tras confirmar hace `LIMPIAR_TODO` +
+    reinserta los participantes; anuncia `"N participantes cargados"`
+- Layout: `aside.columna-izquierda` (Form + Lista) | `section.columna-central` (Anuncio + Panel +
+  Probabilidad) | `aside.columna-derecha` (Historial)
 
 ### `<FormularioAgregar onAgregar>`
 
@@ -255,7 +310,7 @@ El TTS compara `nombreAnunciado` con `historial[1]?.nombre` para detectar repeti
 
 ---
 
-## 10. Stack y comandos
+## 10. Stack, comandos y deployment
 
 | Herramienta  | Versión |
 | ------------ | ------- |
@@ -271,12 +326,28 @@ cd sis-turno
 # Servidor de desarrollo
 npm run dev
 
-# Build de producción
+# Build de producción (corre `tsc -b` antes de `vite build`)
 npm run build
 
 # Preview del build
 npm run preview
 ```
+
+### Configuración de Vite
+
+[`vite.config.ts`](sis-turno/vite.config.ts) define **`base: "/SIS/"`** — necesario porque la app se sirve
+desde `https://yeicogm.github.io/SIS/` (GitHub Pages bajo la ruta del repo). Si renombras el repo o lo mueves
+a un dominio propio, hay que actualizar este valor.
+
+### Deployment
+
+El deploy a GitHub Pages es **automático** vía [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+al hacer push a `main`:
+
+1. Job `build`: checkout → `setup-node@v4` con Node 20 + caché de `sis-turno/package-lock.json` → `npm ci` en
+   `sis-turno/` → `npm run build` → sube artefacto desde `sis-turno/dist`.
+2. Job `deploy` (con `needs: build`): publica el artefacto vía `actions/deploy-pages@v4` en el environment
+   `github-pages`.
 
 ---
 
@@ -284,15 +355,15 @@ npm run preview
 
 Las siguientes funcionalidades del original `SISvb` **no están implementadas** en `sis-turno`:
 
-| Funcionalidad                                             | Estado                                 |
-| --------------------------------------------------------- | -------------------------------------- |
-| PV (Puntos de Vida) por participante                      | ❌ No implementado                     |
-| Dmin / Dmax (daño mínimo/máximo)                          | ❌ No implementado                     |
-| Campo "Incapacitado" (distinto de herido)                 | ❌ No implementado                     |
-| Guardar/cargar plantel desde archivo XML                  | ❌ No implementado (solo localStorage) |
-| Simulación de combate                                     | ❌ No implementado                     |
-| Separación visual Jugadores / Master en grillas distintas | Unificado en una sola lista            |
-| Ticker de estado en tiempo real                           | ❌ No implementado                     |
+| Funcionalidad                                             | Estado                                              |
+| --------------------------------------------------------- | --------------------------------------------------- |
+| PV (Puntos de Vida) por participante                      | ❌ No implementado                                  |
+| Dmin / Dmax (daño mínimo/máximo)                          | ❌ No implementado                                  |
+| Campo "Incapacitado" (distinto de herido)                 | ❌ No implementado                                  |
+| Guardar/cargar plantel desde archivo XML (formato VB)     | ❌ Reemplazado por archivo `.sis` (JSON) — ver §6.2 |
+| Simulación de combate                                     | ❌ No implementado                                  |
+| Separación visual Jugadores / Master en grillas distintas | Unificado en una sola lista                         |
+| Ticker de estado en tiempo real                           | ❌ No implementado                                  |
 
 El campo `herido` en React es la versión simplificada del flag `Incapacitado` del original.
 
