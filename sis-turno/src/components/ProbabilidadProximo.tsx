@@ -16,7 +16,10 @@ function calcularVelocidadGrupo(participantes: Participante[]): {
   const jugadores = participantes.filter((p) => p.esJugador);
   const enemigos = participantes.filter((p) => !p.esJugador);
 
-  if (jugadores.length < 1 || enemigos.length < 1) return { aviso: null };
+  // Misma condición que el VB original (Form1.vb:740) y que el reducer
+  // (calcularPRxTurno): se requiere > 1 participante en cada bando para
+  // evaluar el desbalance de velocidad.
+  if (jugadores.length < 2 || enemigos.length < 2) return { aviso: null };
 
   const avgJugadores = jugadores.reduce((s, p) => s + p.prOriginal, 0) / jugadores.length;
   const avgEnemigos = enemigos.reduce((s, p) => s + p.prOriginal, 0) / enemigos.length;
